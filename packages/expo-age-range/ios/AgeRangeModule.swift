@@ -8,7 +8,7 @@ public class AgeRangeModule: Module {
 
     AsyncFunction("requestAgeRangeAsync") { (opts: AgeRangeRequestParams) in
       guard #available(iOS 26.0, *) else {
-        throw AgeRangeException("Declared Age Range APIs requires iOS 26+", code: AgeRangeErrorCodes.featureUnsupported)
+        return AgeRangeResponse()
       }
 
       let currentVc: UIViewController? = await MainActor.run { [appContext] in
@@ -27,7 +27,7 @@ public class AgeRangeModule: Module {
         case .sharing(let range):
           return AgeRangeResponse(range)
         @unknown default:
-          throw AgeRangeException("Unknown age range response type", code: AgeRangeErrorCodes.unknown)
+          throw AgeRangeException("Unknown age range response type")
         }
       } catch AgeRangeService.Error.notAvailable {
         throw AgeRangeException("AgeRangeService not available", code: AgeRangeErrorCodes.notAvailable)
